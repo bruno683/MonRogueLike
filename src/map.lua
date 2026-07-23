@@ -1,7 +1,9 @@
 Map = {}
 
-
 function Map:New(data, width,height)
+    assert(data ~= nil, "Map:New() nécessite un tableau de tiles")
+    assert(width ~= nil and height ~= nil, "Map:New() nécessite width et height")
+    assert(#data == width * height, "Map:New() le tableau de tiles doit avoir une taille égale à width * height")
     local this = {
         tiles = data,
         width = width,
@@ -47,13 +49,7 @@ function Map:GetTile(x,y)
 
     return self.tiles[y * self.width + x + 1] 
 end
-function Map:GetCell(x,y)
-    if x < 0 or y < 0 or x > self.width - 1 or y > self.height - 1 then
-        return 0
-    end
 
-    return self.tiles[y * self.width + x + 1] 
-end
 
 function Map:SetTile(x,y, tile)
     if x < 0 or y < 0 or x > self.width - 1 or y > self.height - 1 then
