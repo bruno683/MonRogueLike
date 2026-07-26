@@ -1,17 +1,19 @@
+-- chargement des modules
+local Map = require ("/src/map")
+local Player = require ("/src/player")
+local Camera = require ("/libs/camera")
+local Level = require ("/src/level")
+
 local Game = {}
 
 
 function Game:load()
-    -- chargement des modules
-    local Map = require ("/src/map")
-    local Player = require ("/src/player")
-    local Camera = require ("/libs/camera")
-    local Level = require ("/src/level")
+    
     -- chargement des instances
     self.camera = Camera()
     self.player = Player:New(4,4)
-    level1 = Level.grid
-    self.map = Map:New(level1,41,25,32)
+    
+    self.map = Map:New(Level.grid,41,25,32)
 end
 
 function Game:update(dt)
