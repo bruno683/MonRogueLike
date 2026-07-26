@@ -1,4 +1,11 @@
 local Map = {}
+local Tiles = require ("/src/tiles")
+local tiles = {
+    [1] = Tiles[1],
+    [2] = Tiles[2],
+    [3] = Tiles[3],
+    [4] = Tiles[4],
+}
 
 function Map:New(data, width,height, cellsize)
     assert(data ~= nil, "Map:New() nécessite un tableau de tiles")
@@ -25,15 +32,15 @@ function Map:Render()
             local sx = c * self.cellsize
             local sy = l * self.cellsize
             local tile = self:GetTile(c, l)
-            if tile == 0 then 
+            if tile == tiles[1].id then 
                 love.graphics.rectangle("line",sx,sy, self.cellsize, self.cellsize)
-            elseif tile == 1 then
+            elseif tile == tiles[2].id then
                 love.graphics.rectangle("fill", sx, sy, self.cellsize, self.cellsize)
-            elseif tile == 2 then
+            elseif tile == tiles[3].id  then
                 love.graphics.setColor(0, 0.5, 0)
                 love.graphics.rectangle("fill", sx, sy, self.cellsize, self.cellsize)
                 love.graphics.setColor(1, 1, 1)
-            elseif tile == 3 then
+            elseif tile == tiles[4].id then
                 love.graphics.setColor(0, 0, 0.8)
                 love.graphics.rectangle("fill", sx, sy, self.cellsize, self.cellsize)
                 love.graphics.setColor(1, 1, 1)
