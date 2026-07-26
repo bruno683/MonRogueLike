@@ -1,6 +1,6 @@
-Map = {}
+local Map = {}
 
-function Map:New(data, width,height)
+function Map:New(data, width,height, cellsize)
     assert(data ~= nil, "Map:New() nécessite un tableau de tiles")
     assert(width ~= nil and height ~= nil, "Map:New() nécessite width et height")
     assert(#data == width * height, "Map:New() le tableau de tiles doit avoir une taille égale à width * height")
@@ -8,11 +8,11 @@ function Map:New(data, width,height)
         tiles = data,
         width = width,
         height = height,
-        cellsize = 64,
+        cellsize = cellsize or 64,
     }
 
     self.__index = self
-    setmetatable(this,self)
+    setmetatable(this, self)
 
     return this
 end
