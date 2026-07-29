@@ -12,6 +12,7 @@ function Player:New(cellX, cellY)
     setmetatable(this, self)
 
     return this
+
 end
 
 -- Méthodes publiques
@@ -26,6 +27,7 @@ function Player:Move(map, dx, dy)
         self.x = nextX
         self.y = nextY
     end
+    
 end
 
 function Player:Render(map)
@@ -41,4 +43,6 @@ end
 function Player:CheckCollision(map, x, y)
     return map:IsWalkable(x, y)
 end
+
+
 return Player
