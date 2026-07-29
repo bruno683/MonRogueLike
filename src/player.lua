@@ -1,5 +1,7 @@
 local Player = {}
 
+--constructeur
+
 function Player:New(cellX, cellY)
     local this =
     {
@@ -12,9 +14,7 @@ function Player:New(cellX, cellY)
     return this
 end
 
-function Player:CheckCollision(map, x, y)
-    return map:IsWalkable(x, y)
-end
+-- Méthodes publiques
 
 function Player:Move(map, dx, dy)
     -- Déplace le joueur d'une case si la position cible est praticable.
@@ -36,4 +36,9 @@ function Player:Render(map)
     love.graphics.setColor(1, 1, 1)
 end
 
+-- mééthodes privées
+
+function Player:CheckCollision(map, x, y)
+    return map:IsWalkable(x, y)
+end
 return Player

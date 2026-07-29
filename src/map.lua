@@ -7,6 +7,8 @@ local tiles = {
     [4] = Tiles[4],
 }
 
+-- constructeur
+
 function Map:New(data, width,height, cellsize)
     assert(data ~= nil, "Map:New() nécessite un tableau de tiles")
     assert(width ~= nil and height ~= nil, "Map:New() nécessite width et height")
@@ -23,6 +25,8 @@ function Map:New(data, width,height, cellsize)
 
     return this
 end
+
+-- Méthodes Publiques
 
 function Map:Render()
     
