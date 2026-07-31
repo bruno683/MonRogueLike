@@ -73,6 +73,11 @@ function World:Keypressed(key)
 end
 
 
+function World:ProcessIntent(intent)
+    if intent.type == "move" then
+        intent.actor:Move(self.map, intent.dx, intent.dy)
+    end
+end
 
 
 
