@@ -56,11 +56,14 @@ function World:Draw()
     self.camera:detach()
 end
 
+function World:MovePlayer(dx, dy)
+    self.player:Move(self.map, dx, dy)
+end
+
 
 function World:Keypressed(key)
-    if key == "escape" then
-        love.event.quit() 
-    end
+    
+    --[[ 
     if key == "z" then
         self.player:Move(self.map, 0, -1)
     elseif key == "s" then
@@ -70,14 +73,19 @@ function World:Keypressed(key)
     elseif key == "d" then
         self.player:Move(self.map, 1, 0)
     end
+    ]]
+    
+    
 end
 
-
+--[[
 function World:ProcessIntent(intent)
     if intent.type == "move" then
         intent.actor:Move(self.map, intent.dx, intent.dy)
     end
 end
+]]
+
 
 
 
