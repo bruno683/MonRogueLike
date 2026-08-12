@@ -1,4 +1,4 @@
-local Player = require("/src/player")
+--local Player = require("/src/player")
 local Map = require("/src/map")
 local Level = require("/src/level")
 local Camera = require("/libs/camera")
@@ -14,7 +14,7 @@ local World = {}
 function World:Load()
     -- chargement des instances
     self.camera = Camera()
-    self.player = Player:New(4,4)
+    self.player = Entity:New(4,4, "@")
     self.npc1 = Entity:New(10, 14, "npc1")
     self.map = Map:New(Level.grid,41,25,32)
     -- initialisation du tour
@@ -60,14 +60,14 @@ function World:Draw()
     love.graphics.setColor(1,1,1)
 end
 
-function World:MovePlayer(dx, dy)
+function World:MoveEntity(entity, dx, dy)
     -- Déplace le joueur d'une case si la position cible est praticable.
-    local player = self.player
-    local nextX = player.x + dx
-    local nextY = player.y + dy
+    local entity = entity 
+    local nextX = entity.x + dx
+    local nextY = entity.y + dy
     
     if self.map:IsWalkable(nextX, nextY) then
-        player:SetPosition(nextX, nextY)
+        entity:SetPosition(nextX, nextY)
         return true  
     end
     return false
@@ -84,7 +84,7 @@ function World:AdvanceTurn()
     local nextX = self.npc1.x + 1
     local nextY = self.npc1.y
     if self.map:IsWalkable(nextX, nextY) then
-        self.npc1:SetPosition(nextX, nextY)
+        World:MoveEntity(self.npc1, 1, 0)
     end
 end
 
