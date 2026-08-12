@@ -34,7 +34,7 @@ function Game:keypressed(key)
     elseif key == "s" then
         acted = World:MovePlayer(0, 1)
     elseif key == "z" then
-        World:MovePlayer(0, -1) 
+        acted = World:MovePlayer(0, -1) 
     else acted = false
     end
     if acted then
