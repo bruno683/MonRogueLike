@@ -62,7 +62,6 @@ end
 
 function World:MoveEntity(entity, dx, dy)
     -- Déplace le joueur d'une case si la position cible est praticable.
-    local entity = entity 
     local nextX = entity.x + dx
     local nextY = entity.y + dy
     
@@ -77,15 +76,11 @@ function World:AdvanceTurn()
     -- Ici, vous pouvez ajouter la logique pour faire avancer le tour du jeu.
     -- Par exemple, vous pourriez mettre à jour les ennemis, gérer les événements, etc.
     
-        self.turn = self.turn  + 1
-    -- les actions dans le monde sont jouées ici, par exemple les déplacements des ennemis, les effets de statut, etc.
-    -- si le joueur a bougé, on peut déclencher les actions des ennemis
-    -- on verifie que les cases sont valides pour le deplacement 
-    local nextX = self.npc1.x + 1
-    local nextY = self.npc1.y
-    if self.map:IsWalkable(nextX, nextY) then
-        World:MoveEntity(self.npc1, 1, 0)
-    end
+    self.turn = self.turn  + 1
+    -- les actions dans le monde sont jouées ici, par exemple les 
+    -- déplacements des ennemis, les effets de statut, etc.
+    self:MoveEntity(self.npc1, 1, 0)
+    
 end
 
 
