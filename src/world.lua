@@ -7,15 +7,14 @@ local Camera = require("/libs/camera")
 
 
 local World = {}
-local map
+
 -- constructeur
 
 function World:Load()
     -- chargement des instances
     self.camera = Camera()
     self.player = Player:New(4,4)
-    map = self.map
-    map = Map:New(Level.grid,41,25,32)
+    self.map = Map:New(Level.grid,41,25,32)
 end
 
 -- méthodes publiques
@@ -23,12 +22,12 @@ end
 
 function World:Update(dt)
     -- gestion de la caméra pour suivre le joueur
-    self.camera:lookAt(self.player.x * map.cellsize, self.player.y * map.cellsize)
+    self.camera:lookAt(self.player.x * self.map.cellsize, self.player.y * self.map.cellsize)
 
     local w = love.graphics.getWidth()
     local h = love.graphics.getHeight()
-    local mapWidth = map.width * map.cellsize
-    local mapHeight = map.height * map.cellsize
+    local mapWidth = self.map.width * self.map.cellsize
+    local mapHeight = self.map.height * self.map.cellsize
 
     --Left and right boundaries
     if self.camera.x < w/2 then
@@ -48,8 +47,8 @@ end
 
 function World:Draw()
     self.camera:attach()
-    map:Render()
-    self.player:Render(map)
+    self.map:Render()
+    self.player:Render(self.map)
     self.camera:detach()
 end
 
@@ -59,17 +58,12 @@ function World:MovePlayer(dx, dy)
     local nextX = player.x + dx
     local nextY = player.y + dy
     
-    if map:IsWalkable(nextX, nextY) then
-        player.x = nextX
-        player.y = nextY
+    if self.map:IsWalkable(nextX, nextY) then
+        player:SetPosition(nextX, nextY)
     end
-    player:SetPosition(player.x, player.y)
 end
 
 
-function World:Keypressed(key)
-    
-end
 
 
 return World
