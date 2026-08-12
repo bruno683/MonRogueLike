@@ -28,13 +28,13 @@ function Game:keypressed(key)
     if key == "escape" then
         love.event.quit() 
     elseif key == "d" then
-        acted = World:MovePlayer(1, 0)
+        acted = World:MoveEntity(World.player, 1, 0)
     elseif key == "q" then
-        acted = World:MovePlayer(-1, 0)
+        acted = World:MoveEntity(World.player, -1, 0)
     elseif key == "s" then
-        acted = World:MovePlayer(0, 1)
+        acted = World:MoveEntity(World.player, 0, 1)
     elseif key == "z" then
-        acted = World:MovePlayer(0, -1) 
+        acted = World:MoveEntity(World.player, 0, -1) 
     else acted = false
     end
     if acted then
