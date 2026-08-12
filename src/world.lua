@@ -80,7 +80,7 @@ function World:AdvanceTurn()
         self.turn = self.turn  + 1
     -- les actions dans le monde sont jouées ici, par exemple les déplacements des ennemis, les effets de statut, etc.
     -- si le joueur a bougé, on peut déclencher les actions des ennemis
-    -- on verifie que les cases sont valides pour le deplacement sinon changement de direction
+    -- on verifie que les cases sont valides pour le deplacement 
     local nextX = self.npc1.x + 1
     local nextY = self.npc1.y
     if self.map:IsWalkable(nextX, nextY) then
