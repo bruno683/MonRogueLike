@@ -1,13 +1,13 @@
 -- chargement des modules
 local World = require("/src/world")
-local Input = require("/src/input")
+--local Input = require("/src/input")
 
 
 local Game = {}
-local input
+--local input
 
 function Game:load()
-    input = Input
+ --   input = Input
     World:Load()
     
 end
@@ -27,9 +27,7 @@ end
 function Game:keypressed(key)
     if key == "escape" then
         love.event.quit() 
-    end
-    --Input:keypressed(key)
-    if input:isKeyPressed("d") then
+    elseif key == "d" then
         World:MovePlayer(1, 0)
     end
    -- World:Keypressed(key)

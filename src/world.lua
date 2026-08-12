@@ -7,28 +7,28 @@ local Camera = require("/libs/camera")
 
 
 local World = {}
-
+local map
 -- constructeur
 
 function World:Load()
     -- chargement des instances
     self.camera = Camera()
     self.player = Player:New(4,4)
-    
-    self.map = Map:New(Level.grid,41,25,32)
+    map = self.map
+    map = Map:New(Level.grid,41,25,32)
 end
 
 -- méthodes publiques
 
 
 function World:Update(dt)
-
-    self.camera:lookAt(self.player.x * self.map.cellsize, self.player.y * self.map.cellsize)
+    -- gestion de la caméra pour suivre le joueur
+    self.camera:lookAt(self.player.x * map.cellsize, self.player.y * map.cellsize)
 
     local w = love.graphics.getWidth()
     local h = love.graphics.getHeight()
-    local mapWidth = self.map.width * self.map.cellsize
-    local mapHeight = self.map.height * self.map.cellsize
+    local mapWidth = map.width * map.cellsize
+    local mapHeight = map.height * map.cellsize
 
     --Left and right boundaries
     if self.camera.x < w/2 then
@@ -46,47 +46,30 @@ function World:Update(dt)
 
 end
 
-
-
 function World:Draw()
-
     self.camera:attach()
-    self.map:Render()
-    self.player:Render(self.map)
+    map:Render()
+    self.player:Render(map)
     self.camera:detach()
 end
 
 function World:MovePlayer(dx, dy)
-    self.player:Move(self.map, dx, dy)
+    -- Déplace le joueur d'une case si la position cible est praticable.
+    local player = self.player
+    local nextX = player.x + dx
+    local nextY = player.y + dy
+    
+    if map:IsWalkable(nextX, nextY) then
+        player.x = nextX
+        player.y = nextY
+    end
+    player:SetPosition(player.x, player.y)
 end
 
 
 function World:Keypressed(key)
     
-    --[[ 
-    if key == "z" then
-        self.player:Move(self.map, 0, -1)
-    elseif key == "s" then
-        self.player:Move(self.map, 0, 1)
-    elseif key == "q" then
-        self.player:Move(self.map, -1, 0)
-    elseif key == "d" then
-        self.player:Move(self.map, 1, 0)
-    end
-    ]]
-    
-    
 end
-
---[[
-function World:ProcessIntent(intent)
-    if intent.type == "move" then
-        intent.actor:Move(self.map, intent.dx, intent.dy)
-    end
-end
-]]
-
-
 
 
 return World
