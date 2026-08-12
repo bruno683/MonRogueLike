@@ -2,18 +2,20 @@ local Player = require("/src/player")
 local Map = require("/src/map")
 local Level = require("/src/level")
 local Camera = require("/libs/camera")
+local Entity = require("/src/entity")
 
 
 
 
 local World = {}
-local playerHasMoved = false -- Variable pour suivre si le joueur a bougé
+--local playerHasMoved = false -- Variable pour suivre si le joueur a bougé
 -- constructeur
 
 function World:Load()
     -- chargement des instances
     self.camera = Camera()
     self.player = Player:New(4,4)
+    self.npc1 = Entity:New(10, 14, "npc1")
     self.map = Map:New(Level.grid,41,25,32)
     -- initialisation du tour
     self.turn = 0
@@ -51,6 +53,7 @@ function World:Draw()
     self.camera:attach()
     self.map:Render()
     self.player:Render(self.map)
+    self.npc1:Render(self.map)
     self.camera:detach()
     love.graphics.setColor(0,0,1)
     love.graphics.print("Tour: " .. self.turn, 10, 10)  
@@ -75,6 +78,14 @@ function World:AdvanceTurn()
     -- Par exemple, vous pourriez mettre à jour les ennemis, gérer les événements, etc.
     
         self.turn = self.turn  + 1
+    -- les actions dans le monde sont jouées ici, par exemple les déplacements des ennemis, les effets de statut, etc.
+    -- si le joueur a bougé, on peut déclencher les actions des ennemis
+    -- on verifie que les cases sont valides pour le deplacement sinon changement de direction
+    local nextX = self.npc1.x + 1
+    local nextY = self.npc1.y
+    if self.map:IsWalkable(nextX, nextY) then
+        self.npc1:SetPosition(nextX, nextY)
+    end
 end
 
 
