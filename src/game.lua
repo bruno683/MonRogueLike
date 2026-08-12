@@ -19,6 +19,7 @@ end
 function Game:draw()
 
     World:Draw()
+    
 
 end
 

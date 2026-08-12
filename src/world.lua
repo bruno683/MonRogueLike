@@ -7,7 +7,7 @@ local Camera = require("/libs/camera")
 
 
 local World = {}
-
+local playerHasMoved = false -- Variable pour suivre si le joueur a bougé
 -- constructeur
 
 function World:Load()
@@ -15,6 +15,8 @@ function World:Load()
     self.camera = Camera()
     self.player = Player:New(4,4)
     self.map = Map:New(Level.grid,41,25,32)
+    -- initialisation du tour
+    self.turn = 0
 end
 
 -- méthodes publiques
@@ -50,6 +52,9 @@ function World:Draw()
     self.map:Render()
     self.player:Render(self.map)
     self.camera:detach()
+    love.graphics.setColor(0,0,1)
+    love.graphics.print("Tour: " .. self.turn, 10, 10)  
+    love.graphics.setColor(1,1,1)
 end
 
 function World:MovePlayer(dx, dy)
@@ -60,10 +65,17 @@ function World:MovePlayer(dx, dy)
     
     if self.map:IsWalkable(nextX, nextY) then
         player:SetPosition(nextX, nextY)
+        return true  
     end
+    return false
 end
 
-
+function World:AdvanceTurn()
+    -- Ici, vous pouvez ajouter la logique pour faire avancer le tour du jeu.
+    -- Par exemple, vous pourriez mettre à jour les ennemis, gérer les événements, etc.
+    
+        self.turn = self.turn  + 1
+end
 
 
 return World
