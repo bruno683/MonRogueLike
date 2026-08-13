@@ -1,4 +1,3 @@
---local Player = require("/src/player")
 local Map = require("/src/map")
 local Level = require("/src/level")
 local Camera = require("/libs/camera")
@@ -8,17 +7,21 @@ local Entity = require("/src/entity")
 
 
 local World = {}
---local playerHasMoved = false -- Variable pour suivre si le joueur a bougé
+
+
+
 -- constructeur
 
 function World:Load()
     -- chargement des instances
     self.camera = Camera()
-    self.player = Entity:New(4,4, "@")
-    self.npc1 = Entity:New(10, 14, "npc1")
+    self.entities = {}
+    self.player = Entity:New(20,14, "@",self.entities)
+    self.npc1 = Entity:New(10, 14, "npc1",self.entities)
     self.map = Map:New(Level.grid,41,25,32)
     -- initialisation du tour
     self.turn = 0
+    print(#self.entities)
 end
 
 -- méthodes publiques
@@ -69,7 +72,9 @@ function World:MoveEntity(entity, dx, dy)
         entity:SetPosition(nextX, nextY)
         return true  
     end
+    
     return false
+
 end
 
 function World:AdvanceTurn()
