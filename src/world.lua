@@ -13,13 +13,17 @@ local World = {}
 -- constructeur
 
 function World:Load()
-    -- chargement des instances
+    -- loading instances
     self.camera = Camera()
     self.entities = {}
+    -- entities instanciations
     self.player = Entity:New(20,14, "@")
     table.insert(self.entities, self.player)
     self.npc1 = Entity:New(10, 14, "npc1")
     table.insert(self.entities, self.npc1)
+    self.npc2 = Entity:New(10, 22,"npc2")
+    table.insert(self.entities, self.npc2)
+    -- map loading
     self.map = Map:New(Level.grid,41,25,32)
     -- initialisation du tour
     self.turn = 0
@@ -57,8 +61,15 @@ end
 function World:Draw()
     self.camera:attach()
     self.map:Render()
+    for _, entity in ipairs(self.entities) do 
+        entity:Render(self.map)
+    end
+    --[[
     self.player:Render(self.map)
     self.npc1:Render(self.map)
+    self.npc2:Render(self.map)
+    ]]
+    
     self.camera:detach()
     love.graphics.setColor(0,0,1)
     love.graphics.print("Tour: " .. self.turn, 10, 10)  
@@ -76,7 +87,7 @@ function World:GetEntityAt(x,y)
 end
 
 function World:MoveEntity(entity, dx, dy)
-    -- Déplace le joueur d'une case si la position cible est praticable.
+    -- Déplace l'entité d'une case si la position cible est praticable.
     local nextX = entity.x + dx
     local nextY = entity.y + dy
     
