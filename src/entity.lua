@@ -2,7 +2,7 @@ local Entity = {}
 
 
 --constructor
-function Entity:New(x, y, name, collection)
+function Entity:New(x, y, name)
     local this = {  
         x = x,
         y = y,
@@ -10,7 +10,6 @@ function Entity:New(x, y, name, collection)
     }
     self.__index = self
     setmetatable(this, self)
-    table.insert(collection, this)
     return this
 end
 
