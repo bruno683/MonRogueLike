@@ -6,7 +6,8 @@ function Entity:New(x, y, name)
     local this = {  
         x = x,
         y = y,
-        name = name
+        name = name,
+        isPlayer = false
     }
     self.__index = self
     setmetatable(this, self)

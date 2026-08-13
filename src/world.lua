@@ -18,6 +18,7 @@ function World:Load()
     self.entities = {}
     -- entities instanciations
     self.player = Entity:New(20,14, "@")
+    self.player.isPlayer = true
     table.insert(self.entities, self.player)
     self.npc1 = Entity:New(10, 14, "npc1")
     table.insert(self.entities, self.npc1)
@@ -64,11 +65,6 @@ function World:Draw()
     for _, entity in ipairs(self.entities) do 
         entity:Render(self.map)
     end
-    --[[
-    self.player:Render(self.map)
-    self.npc1:Render(self.map)
-    self.npc2:Render(self.map)
-    ]]
     
     self.camera:detach()
     love.graphics.setColor(0,0,1)
@@ -104,11 +100,27 @@ end
 function World:AdvanceTurn()
     -- Ici, vous pouvez ajouter la logique pour faire avancer le tour du jeu.
     -- Par exemple, vous pourriez mettre à jour les ennemis, gérer les événements, etc.
+    local directions = {
+        { 1, 0},
+        {-1, 0},
+        { 0, 1},
+        { 0,-1}
+    }
+
     
     self.turn = self.turn  + 1
     -- les actions dans le monde sont jouées ici, par exemple les 
     -- déplacements des ennemis, les effets de statut, etc.
-    self:MoveEntity(self.npc1, 1, 0)
+    --self:MoveEntity(self.npc1, 1, 0)
+    for _, entity in ipairs( self.entities) do 
+        if not entity.isPlayer then
+            local direction = directions[math.random(#directions)]
+            self:MoveEntity(
+                entity,
+                direction[1], 
+                direction[2])
+        end
+    end
     
 end
 
