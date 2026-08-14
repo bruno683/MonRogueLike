@@ -93,8 +93,6 @@ function World:MoveEntity(entity, dx, dy)
     end
     
     return false
-    
-
 end
 
 function World:AdvanceTurn()  
