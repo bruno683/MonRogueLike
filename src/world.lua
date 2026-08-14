@@ -2,7 +2,7 @@ local Map = require("/src/map")
 local Level = require("/src/level")
 local Camera = require("/libs/camera")
 local Entity = require("/src/entity")
-
+local Ia = require("/src/ia")
 
 
 
@@ -97,31 +97,16 @@ function World:MoveEntity(entity, dx, dy)
 
 end
 
-function World:AdvanceTurn()
-    -- Ici, vous pouvez ajouter la logique pour faire avancer le tour du jeu.
-    -- Par exemple, vous pourriez mettre à jour les ennemis, gérer les événements, etc.
-    local directions = {
-        { 1, 0},
-        {-1, 0},
-        { 0, 1},
-        { 0,-1}
-    }
+function World:AdvanceTurn()  
 
-    
     self.turn = self.turn  + 1
-    -- les actions dans le monde sont jouées ici, par exemple les 
-    -- déplacements des ennemis, les effets de statut, etc.
-    --self:MoveEntity(self.npc1, 1, 0)
+    
     for _, entity in ipairs( self.entities) do 
         if not entity.isPlayer then
-            local direction = directions[math.random(#directions)]
-            self:MoveEntity(
-                entity,
-                direction[1], 
-                direction[2])
+            local move = Ia:GetRandomMove()    
+            self:MoveEntity(entity, move.dx, move.dy)
         end
     end
-    
 end
 
 
