@@ -9,7 +9,6 @@ local Ia = require("/src/ia")
 local World = {}
 
 
-
 -- constructeur
 
 function World:Load()
@@ -17,11 +16,14 @@ function World:Load()
     self.camera = Camera()
     self.entities = {}
     -- entities instanciations
+    -- player
     self.player = Entity:New(20,14, "@")
     self.player.isPlayer = true
     table.insert(self.entities, self.player)
+    -- npc1
     self.npc1 = Entity:New(10, 14, "npc1")
     table.insert(self.entities, self.npc1)
+    --npc2
     self.npc2 = Entity:New(10, 22,"npc2")
     table.insert(self.entities, self.npc2)
     -- map loading
@@ -92,6 +94,13 @@ function World:MoveEntity(entity, dx, dy)
         return true  
     end
     
+    local target = self:GetEntityAt(nextX, nextY)
+
+    if target then
+        print(entity.name.." rencontre "..target.name)
+        return false
+    end
+
     return false
 end
 
@@ -104,6 +113,7 @@ function World:AdvanceTurn()
             local move = Ia:GetRandomMove()    
             self:MoveEntity(entity, move.dx, move.dy)
         end
+        
     end
 end
 
