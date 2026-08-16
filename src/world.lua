@@ -84,6 +84,15 @@ function World:GetEntityAt(x,y)
     return nil
 end
 
+function World:HandleEntityCollision(actor,target)
+   
+        if target then 
+            print(actor.name.." rencontre "..target.name)
+            return true
+        end
+        return false
+end
+
 function World:MoveEntity(entity, dx, dy)
     -- Déplace l'entité d'une case si la position cible est praticable.
     local nextX = entity.x + dx
@@ -91,16 +100,26 @@ function World:MoveEntity(entity, dx, dy)
     
     if self.map:IsWalkable(nextX, nextY) and not self:GetEntityAt(nextX, nextY) then  
         entity:SetPosition(nextX, nextY)
-        return true  
+        return true     
+    end
+    local target = self:GetEntityAt(nextX, nextY)
+    if target then
+     
+        self:HandleEntityCollision(entity, target) 
+        print("self collision =",
+                entity.name,
+                "dx =" ,dx, 
+                "dy =" ,dy,
+                "position = ", entity.x, entity.y  
+            ) 
+        print("self collision =",
+            target.name,
+            "dx =" ,dx, 
+            "dy =" ,dy,
+            "position = ", target.x, target.y  
+        ) 
     end
     
-    local target = self:GetEntityAt(nextX, nextY)
-
-    if target then
-        print(entity.name.." rencontre "..target.name)
-        return false
-    end
-
     return false
 end
 
