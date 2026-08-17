@@ -17,14 +17,14 @@ function World:Load()
     self.entities = {}
     -- entities instanciations
     -- player
-    self.player = Entity:New(20,14, "@")
+    self.player = Entity:New(20,14, "@", 100)
     self.player.isPlayer = true
     table.insert(self.entities, self.player)
     -- npc1
-    self.npc1 = Entity:New(10, 14, "npc1")
+    self.npc1 = Entity:New(10, 14, "npc1", 50)
     table.insert(self.entities, self.npc1)
     --npc2
-    self.npc2 = Entity:New(10, 22,"npc2")
+    self.npc2 = Entity:New(10, 22,"npc2", 50)
     table.insert(self.entities, self.npc2)
     -- map loading
     self.map = Map:New(Level.grid,41,25,32)
@@ -58,7 +58,12 @@ function World:Update(dt)
     elseif self.camera.y > mapHeight - h/2 then
         self.camera.y = mapHeight - h/2
     end
-
+    for i =  #self.entities, 1, -1 do 
+        local entity = self.entities[i]
+        if entity.isDead  then 
+            table.remove(self.entities, i)
+        end
+    end
 end
 
 function World:Draw()
@@ -87,7 +92,14 @@ end
 function World:HandleEntityCollision(actor,target)
    
         if target then 
-            print(actor.name.." rencontre "..target.name)
+
+            target.hp = target.hp - 30
+            print(actor.name.." attaque "..target.name)
+            print("hp restant de "..target.name.." : "..target.hp)
+            if target.hp <= 0 then 
+                target.isDead = true 
+                print(target.name.." est mort!")
+            end
             return true
         end
         return false
@@ -106,13 +118,13 @@ function World:MoveEntity(entity, dx, dy)
     if target then
      
         self:HandleEntityCollision(entity, target) 
-        print("self collision =",
+        print("collision =",
                 entity.name,
                 "dx =" ,dx, 
                 "dy =" ,dy,
                 "position = ", entity.x, entity.y  
             ) 
-        print("self collision =",
+        print("collision =",
             target.name,
             "dx =" ,dx, 
             "dy =" ,dy,

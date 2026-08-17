@@ -2,11 +2,13 @@ local Entity = {}
 
 
 --constructor
-function Entity:New(x, y, name)
+function Entity:New(x, y, name, hp)
     local this = {  
         x = x,
         y = y,
         name = name,
+        hp = hp,
+        isDead = false,
         isPlayer = false
     }
     self.__index = self
