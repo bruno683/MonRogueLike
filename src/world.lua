@@ -91,12 +91,12 @@ function World:GetEntityAt(x,y)
 end
 
 function World:HandleEntityCollision(actor,target)
-   
         if target and target.interactionType == "hostile" then 
 
             target.hp = target.hp - 30
             print(actor.name.." attaque "..target.name)
             print("hp restant de "..target.name.." : "..target.hp)
+            
             if target.hp <= 0 then 
                 target.isDead = true 
                 print(target.name.." est mort!")
@@ -118,19 +118,7 @@ function World:MoveEntity(entity, dx, dy)
     local target = self:GetEntityAt(nextX, nextY)
     if target then
      
-        self:HandleEntityCollision(entity, target) 
-        print("collision =",
-                entity.name,
-                "dx =" ,dx, 
-                "dy =" ,dy,
-                "position = ", entity.x, entity.y  
-            ) 
-        print("collision =",
-            target.name,
-            "dx =" ,dx, 
-            "dy =" ,dy,
-            "position = ", target.x, target.y  
-        ) 
+        return self:HandleEntityCollision(entity, target) 
     end
     
     return false
@@ -145,7 +133,6 @@ function World:AdvanceTurn()
             local move = Ia:GetRandomMove()    
             self:MoveEntity(entity, move.dx, move.dy)
         end
-        
     end
 end
 
