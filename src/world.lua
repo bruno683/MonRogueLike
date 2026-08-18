@@ -22,6 +22,7 @@ function World:Load()
     table.insert(self.entities, self.player)
     -- npc1
     self.npc1 = Entity:New(10, 14, "npc1", 50)
+    self.npc1.interactionType = "hostile"
     table.insert(self.entities, self.npc1)
     --npc2
     self.npc2 = Entity:New(10, 22,"npc2", 50)
@@ -91,7 +92,7 @@ end
 
 function World:HandleEntityCollision(actor,target)
    
-        if target then 
+        if target and target.interactionType == "hostile" then 
 
             target.hp = target.hp - 30
             print(actor.name.." attaque "..target.name)

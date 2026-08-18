@@ -9,7 +9,8 @@ function Entity:New(x, y, name, hp)
         name = name,
         hp = hp,
         isDead = false,
-        isPlayer = false
+        isPlayer = false,
+        interactionType = "neutral"
     }
     self.__index = self
     setmetatable(this, self)
