@@ -17,11 +17,11 @@ function World:Load()
     self.entities = {}
     -- entities instanciations
     -- player
-    self.player = Entity:New(20,14, "@", 100)
+    self.player = Entity:New(20,14, "@", 50)
     self.player.isPlayer = true
     table.insert(self.entities, self.player)
     -- npc1
-    self.npc1 = Entity:New(10, 14, "npc1", 50)
+    self.npc1 = Entity:New(10, 14, "npc1", 25)
     self.npc1.interactionType = "hostile"
     table.insert(self.entities, self.npc1)
     --npc2
@@ -90,18 +90,35 @@ function World:GetEntityAt(x,y)
     return nil
 end
 
+function World:Attack(actor, target) 
+
+    local distance = math.abs(actor.x - target.x) + math.abs(actor.y - target.y)
+
+    if target.isDead then 
+        return false
+    end
+
+    if distance ~= 1 then 
+        return false
+    end
+    
+    target.hp = target.hp - 5
+
+    print(actor.name.." attaque "..target.name)
+    print("hp restant de "..target.name.." : "..target.hp)
+
+    if target.hp <= 0 then 
+        target.isDead = true 
+        print(target.name.." est mort!")
+        
+    end
+    return true
+   
+end
+
 function World:HandleEntityCollision(actor,target)
         if target and target.interactionType == "hostile" then 
-
-            target.hp = target.hp - 30
-            print(actor.name.." attaque "..target.name)
-            print("hp restant de "..target.name.." : "..target.hp)
-            
-            if target.hp <= 0 then 
-                target.isDead = true 
-                print(target.name.." est mort!")
-            end
-            return true
+            self:Attack(actor, target)
         end
         return false
 end
@@ -124,16 +141,40 @@ function World:MoveEntity(entity, dx, dy)
     return false
 end
 
+function World:GetAdjacentEntity(actor)
+    for _, entity in ipairs(self.entities) do 
+
+        if entity ~= actor and not entity.isDead then 
+
+            local distance = math.abs(actor.x - entity .x) + math.abs(actor.y - entity.y)
+
+            if distance == 1 then 
+
+                return entity
+
+            end
+        end
+    end
+
+end
+
 function World:AdvanceTurn()  
 
     self.turn = self.turn  + 1
     
     for _, entity in ipairs( self.entities) do 
-        if not entity.isPlayer then
-            local move = Ia:GetRandomMove()    
-            self:MoveEntity(entity, move.dx, move.dy)
+        --self:Attack(self.player, entity)
+        if not entity.isPlayer and not entity.isPlayer then
+            local target = self:GetAdjacentEntity(entity)
+            if target then 
+                self:Attack(entity, target)
+            else
+                local move = Ia:GetRandomMove()    
+                self:MoveEntity(entity, move.dx, move.dy)
+            end
         end
     end
+    
 end
 
 
