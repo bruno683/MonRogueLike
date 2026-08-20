@@ -19,6 +19,7 @@ function World:Load()
     -- player
     self.player = Entity:New(20,14, "@", 50)
     self.player.isPlayer = true
+    self.player.faction  = "player"
     table.insert(self.entities, self.player)
     -- npc1
     self.npc1 = Entity:New(10, 14, "npc1", 25)
@@ -26,12 +27,31 @@ function World:Load()
     table.insert(self.entities, self.npc1)
     --npc2
     self.npc2 = Entity:New(10, 22,"npc2", 50)
+    self.npc2.faction = "neutral"
     table.insert(self.entities, self.npc2)
     -- map loading
     self.map = Map:New(Level.grid,41,25,32)
     -- initialisation du tour
     self.turn = 0
-    print(#self.entities)
+    -----------------------------RELATIONS---------------
+     relations = {
+        player = {
+            player = 0,
+            bandits = -100,
+            neutral = 100
+        },
+        neutral = {
+            player = 100,
+            bandits = 0,
+            neutral = 0
+        }, 
+        bandits = {
+            player = -100,
+            bandits = 0,
+            neutral = 0
+        }
+    }
+    
 end
 
 -- méthodes publiques
@@ -80,6 +100,17 @@ function World:Draw()
     love.graphics.setColor(1,1,1)
 end
 
+function World:GetFactionRelation(actor, target) 
+  
+    local actorFaction = actor.faction
+    local targetFaction = target.faction
+    if relations[actorFaction] and relations[actorFaction][targetFaction] then 
+        return relations[actorFaction][targetFaction]
+    end
+    return 0 -- si aucune correspondance n'éxiste
+
+end
+
 function World:GetEntityAt(x,y)
     for _, entity in ipairs(self.entities) do 
         if entity.x == x and entity.y == y then
@@ -117,7 +148,7 @@ function World:Attack(actor, target)
 end
 
 function World:HandleEntityCollision(actor,target)
-        if target and not target.isDead then 
+        if target and not target.isDead and self:GetFactionRelation(actor, target) == -100 then 
             return self:Attack(actor, target)
         end
         return false
