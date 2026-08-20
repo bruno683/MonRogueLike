@@ -10,7 +10,8 @@ function Entity:New(x, y, name, hp)
         hp = hp,
         isDead = false,
         isPlayer = false,
-        interactionType = "neutral"
+        interactionType = "neutral",
+        faction = "neutral"
     }
     self.__index = self
     setmetatable(this, self)

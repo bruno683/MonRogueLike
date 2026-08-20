@@ -22,7 +22,7 @@ function World:Load()
     table.insert(self.entities, self.player)
     -- npc1
     self.npc1 = Entity:New(10, 14, "npc1", 25)
-    self.npc1.interactionType = "hostile"
+    self.npc1.faction = "bandits"
     table.insert(self.entities, self.npc1)
     --npc2
     self.npc2 = Entity:New(10, 22,"npc2", 50)
@@ -117,8 +117,8 @@ function World:Attack(actor, target)
 end
 
 function World:HandleEntityCollision(actor,target)
-        if target and target.interactionType == "hostile" then 
-            self:Attack(actor, target)
+        if target and not target.isDead then 
+            return self:Attack(actor, target)
         end
         return false
 end
@@ -144,7 +144,7 @@ end
 function World:GetAdjacentEntity(actor)
     for _, entity in ipairs(self.entities) do 
 
-        if entity ~= actor and not entity.isDead then 
+        if entity ~= actor  then 
 
             local distance = math.abs(actor.x - entity .x) + math.abs(actor.y - entity.y)
 
@@ -163,8 +163,7 @@ function World:AdvanceTurn()
     self.turn = self.turn  + 1
     
     for _, entity in ipairs( self.entities) do 
-        --self:Attack(self.player, entity)
-        if not entity.isPlayer and not entity.isPlayer then
+        if not entity.isPlayer and not entity.isDead then
             local target = self:GetAdjacentEntity(entity)
             if target then 
                 self:Attack(entity, target)
