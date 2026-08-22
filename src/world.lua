@@ -33,25 +33,27 @@ function World:Load()
     self.map = Map:New(Level.grid,41,25,32)
     -- initialisation du tour
     self.turn = 0
-    -----------------------------RELATIONS---------------
-     relations = {
+
+    self.relations = {
         player = {
-            player = 0,
+            player = 100,
             bandits = -100,
-            neutral = 100
+            neutral = 0
         },
         neutral = {
-            player = 100,
+            player = 0,
             bandits = 0,
-            neutral = 0
+            neutral = 100
         }, 
         bandits = {
             player = -100,
-            bandits = 0,
+            bandits = 100,
             neutral = 0
         }
     }
+
     
+        
 end
 
 -- méthodes publiques
@@ -99,13 +101,19 @@ function World:Draw()
     love.graphics.print("Tour: " .. self.turn, 10, 10)  
     love.graphics.setColor(1,1,1)
 end
+--[[
+function World:GetEntityDistance(actor, target) 
+    return math.abs(actor.x - target .x) + math.abs(actor.y - target.y)
+end
+]]
+
 
 function World:GetFactionRelation(actor, target) 
   
     local actorFaction = actor.faction
     local targetFaction = target.faction
-    if relations[actorFaction] and relations[actorFaction][targetFaction] then 
-        return relations[actorFaction][targetFaction]
+    if self.relations[actorFaction] and self.relations[actorFaction][targetFaction] then 
+        return self.relations[actorFaction][targetFaction]
     end
     return 0 -- si aucune correspondance n'éxiste
 
@@ -120,10 +128,18 @@ function World:GetEntityAt(x,y)
 
     return nil
 end
+function World:GetHostileTarget(actor) 
+    for _, target in ipairs(self.entities) do 
+        if target ~= actor and not target.isDead 
+        and self:GetFactionRelation(actor, target) == -100 then 
+            return target
+        end
+    end
+end
 
 function World:Attack(actor, target) 
 
-    local distance = math.abs(actor.x - target.x) + math.abs(actor.y - target.y)
+    local distance = Ia:GetEntityDistance(actor, target)
 
     if target.isDead then 
         return false
@@ -141,7 +157,6 @@ function World:Attack(actor, target)
     if target.hp <= 0 then 
         target.isDead = true 
         print(target.name.." est mort!")
-        
     end
     return true
    
@@ -154,54 +169,50 @@ function World:HandleEntityCollision(actor,target)
         return false
 end
 
+
+
 function World:MoveEntity(entity, dx, dy)
     -- Déplace l'entité d'une case si la position cible est praticable.
-    local nextX = entity.x + dx
-    local nextY = entity.y + dy
-    
-    if self.map:IsWalkable(nextX, nextY) and not self:GetEntityAt(nextX, nextY) then  
-        entity:SetPosition(nextX, nextY)
-        return true     
-    end
-    local target = self:GetEntityAt(nextX, nextY)
-    if target then
-     
-        return self:HandleEntityCollision(entity, target) 
-    end
-    
-    return false
-end
-
-function World:GetAdjacentEntity(actor)
-    for _, entity in ipairs(self.entities) do 
-
-        if entity ~= actor  then 
-
-            local distance = math.abs(actor.x - entity .x) + math.abs(actor.y - entity.y)
-
-            if distance == 1 then 
-
-                return entity
-
-            end
+   
+        local nextX = entity.x + dx
+        local nextY = entity.y + dy
+        
+        if self.map:IsWalkable(nextX, nextY) and not self:GetEntityAt(nextX, nextY) then  
+            entity:SetPosition(nextX, nextY)
+            return true     
         end
-    end
-
+        local target = self:GetEntityAt(nextX, nextY)
+        if target then
+            return self:HandleEntityCollision(entity, target)
+        end
+            
+            return false
+       
 end
+
 
 function World:AdvanceTurn()  
 
     self.turn = self.turn  + 1
-    
-    for _, entity in ipairs( self.entities) do 
-        if not entity.isPlayer and not entity.isDead then
-            local target = self:GetAdjacentEntity(entity)
-            if target then 
-                self:Attack(entity, target)
-            else
-                local move = Ia:GetRandomMove()    
-                self:MoveEntity(entity, move.dx, move.dy)
+    for _, actor in ipairs(self.entities) do 
+        if not actor.isPlayer and not actor.isDead then 
+            local target = self:GetHostileTarget(actor)
+            
+            if target  then 
+                local distance = Ia:GetEntityDistance(actor, target)
+                if distance == 1 then 
+                    self:Attack(actor, target)
+                else 
+                    local move = Ia:MoveToEntity(actor, target)
+                    if move then 
+                        self:MoveEntity(actor, move.dx, move.dy)               
+                    end
+                end
+            else 
+                local move = Ia:GetRandomMove()
+                self:MoveEntity(actor, move.dx, move.dy)
             end
+
         end
     end
     

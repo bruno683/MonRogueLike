@@ -1,5 +1,25 @@
 local Entity = {}
+--[[
+local relations = {
+    player = {
+        player = 100,
+        bandits = -100,
+        neutral = 0
+    },
+    neutral = {
+        player = 0,
+        bandits = 0,
+        neutral = 100
+    }, 
+    bandits = {
+        player = -100,
+        bandits = 100,
+        neutral = 0
+    }
+}
 
+
+]]
 
 --constructor
 function Entity:New(x, y, name, hp)
