@@ -12,21 +12,24 @@ local World = {}
 -- constructeur
 
 function World:Load()
+    local blue = {0,0,1}
+    local red = {1,0,0}
+    local green = {0,1,0}
     -- loading instances
     self.camera = Camera()
     self.entities = {}
     -- entities instanciations
     -- player
-    self.player = Entity:New(20,14, "@", 50)
+    self.player = Entity:New(20,14, "@", 50, blue)
     self.player.isPlayer = true
     self.player.faction  = "player"
     table.insert(self.entities, self.player)
     -- npc1
-    self.npc1 = Entity:New(10, 14, "npc1", 25)
+    self.npc1 = Entity:New(10, 14, "npc1", 25, red)
     self.npc1.faction = "bandits"
     table.insert(self.entities, self.npc1)
     --npc2
-    self.npc2 = Entity:New(10, 22,"npc2", 50)
+    self.npc2 = Entity:New(10, 22,"npc2", 50, green)
     self.npc2.faction = "neutral"
     table.insert(self.entities, self.npc2)
     -- map loading
@@ -93,8 +96,11 @@ function World:Draw()
     self.camera:attach()
     self.map:Render()
     for _, entity in ipairs(self.entities) do 
+        
         entity:Render(self.map)
+        
     end
+    love.graphics.setColor(1,1,1)
     
     self.camera:detach()
     love.graphics.setColor(0,0,1)

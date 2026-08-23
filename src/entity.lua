@@ -1,28 +1,9 @@
 local Entity = {}
---[[
-local relations = {
-    player = {
-        player = 100,
-        bandits = -100,
-        neutral = 0
-    },
-    neutral = {
-        player = 0,
-        bandits = 0,
-        neutral = 100
-    }, 
-    bandits = {
-        player = -100,
-        bandits = 100,
-        neutral = 0
-    }
-}
-
-
-]]
 
 --constructor
-function Entity:New(x, y, name, hp)
+function Entity:New(x, y, name, hp, color)
+    
+
     local this = {  
         x = x,
         y = y,
@@ -31,7 +12,8 @@ function Entity:New(x, y, name, hp)
         isDead = false,
         isPlayer = false,
         interactionType = "neutral",
-        faction = "neutral"
+        faction = "neutral",
+        color = color
     }
     self.__index = self
     setmetatable(this, self)
@@ -41,7 +23,7 @@ end
 function Entity:Render(map)
     local pixelX = self.x * map.cellsize
     local pixelY = self.y * map.cellsize
-    love.graphics.setColor(1, 0.5, 0.8)
+    love.graphics.setColor(self.color)
     love.graphics.print(self.name, pixelX, pixelY, 0, 1, 1, 0, 0, 0, 0)
     love.graphics.setColor(1, 1, 1)
 end
