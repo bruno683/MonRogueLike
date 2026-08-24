@@ -71,13 +71,12 @@ function Map:SetTile(x,y, tile)
     return 1
 end
 
+function Map:IsTransparent(x,y)
+    return self:GetTile(x,y) == 0
+end
 
 function Map:IsWalkable(x,y)
-    local tile = self:GetTile(x,y)
-    if tile == 0 then
-        return true
-    end
-    return false
+    return self:GetTile(x,y) == 0
 end
 
 return Map

@@ -8,7 +8,7 @@ local Ia = require("/src/ia")
 
 local World = {}
 
-
+local linePoints = {}
 -- constructeur
 
 function World:Load()
@@ -59,6 +59,9 @@ function World:Load()
         
 end
 
+
+
+
 -- méthodes publiques
 
 
@@ -90,15 +93,15 @@ function World:Update(dt)
             table.remove(self.entities, i)
         end
     end
+
+    
 end
 
 function World:Draw()
     self.camera:attach()
     self.map:Render()
     for _, entity in ipairs(self.entities) do 
-        
         entity:Render(self.map)
-        
     end
     love.graphics.setColor(1,1,1)
     
@@ -106,13 +109,45 @@ function World:Draw()
     love.graphics.setColor(0,0,1)
     love.graphics.print("Tour: " .. self.turn, 10, 10)  
     love.graphics.setColor(1,1,1)
-end
---[[
-function World:GetEntityDistance(actor, target) 
-    return math.abs(actor.x - target .x) + math.abs(actor.y - target.y)
-end
-]]
+    --line of sight
 
+
+end
+
+function World:BresenhamPoints(x0, y0, x1, y1)
+    local points = {}
+    local dx = math.abs(x1 - x0)
+    local dy = math.abs(y1 - y0)
+    local sx = x0 < x1 and 1 or -1
+    local sy = y0 < y1 and 1 or -1
+    local err = dx - dy
+    
+    while true do
+        table.insert(points, {x = x0, y = y0})
+        if x0 == x1 and y0 == y1 then break end
+        local e2 = 2 * err
+        if e2 > -dy then
+            err = err - dy
+            x0 = x0 + sx
+        end
+        if e2 < dx then
+            err = err + dx
+            y0 = y0 + sy
+        end
+    end
+    
+    return points
+end
+function World:HasLineOfSight(actor, target) 
+    local points = self:BresenhamPoints(actor.x, actor.y, target.x, target.y)
+    for i = 2, #points -1 do 
+        local p = points[i]
+        if not self.map:IsTransparent(p.x, p.y) then 
+            return false
+        end
+    end
+    return true
+end
 
 function World:GetFactionRelation(actor, target) 
   
@@ -137,7 +172,7 @@ end
 function World:GetHostileTarget(actor) 
     for _, target in ipairs(self.entities) do 
         if target ~= actor and not target.isDead 
-        and self:GetFactionRelation(actor, target) == -100 then 
+        and self:GetFactionRelation(actor, target) == -100 and self:HasLineOfSight(actor, target) then 
             return target
         end
     end
@@ -179,7 +214,9 @@ end
 
 function World:MoveEntity(entity, dx, dy)
     -- Déplace l'entité d'une case si la position cible est praticable.
-   
+        print( "npc1 voit player :",
+            self:HasLineOfSight(self.npc1, self.player)
+            )
         local nextX = entity.x + dx
         local nextY = entity.y + dy
         
@@ -191,9 +228,7 @@ function World:MoveEntity(entity, dx, dy)
         if target then
             return self:HandleEntityCollision(entity, target)
         end
-            
             return false
-       
 end
 
 
