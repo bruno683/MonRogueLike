@@ -3,6 +3,7 @@ local Level = require("/src/level")
 local Camera = require("/libs/camera")
 local Entity = require("/src/entity")
 local Ia = require("/src/ia")
+local Intent = require("/src/intent_system")
 
 
 
