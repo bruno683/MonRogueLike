@@ -253,28 +253,25 @@ function World:AdvanceTurn()
             
             if target  then 
                 local distance = Ia:GetEntityDistance(actor, target)
-                local intention = {
-                        type = "attack",
-                        target = target,
-                    }
+                
                 if distance == 1 then 
-                    
+                    local intention = Ia:GetIntent(actor, target)
                     self:ResolveIntent(actor, intention)
+                else
+                    local intention = Ia:MoveToEntity(actor, target)
                     
-                else 
-                   
-                    local move = Ia:MoveToEntity(actor, target)
-                    if move then 
-                        self:ResolveIntent(actor, move)              
+                    if intention then 
+                        self:ResolveIntent(actor, intention)              
+                    else 
+                        local randomIntent = Ia:GetRandomMove()
+                        self:ResolveIntent(actor, randomIntent)
                     end
                 end
-            else 
-                local move = Ia:GetRandomMove()
-                if move then
-                    self:ResolveIntent(actor, move)
-                end
+            else
+                local intent = Ia:GetRandomMove()
+                self:ResolveIntent(actor, intent)
             end
-
+           
         end
     end
     

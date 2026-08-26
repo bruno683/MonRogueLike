@@ -9,10 +9,7 @@ Intent.directions = {
     move_right = {type = "move", dx= 1, dy = 0},
 }
 
-Intent.Attack = {
-    type = "attack",
-    target = target
-}
+Intent.attack = {type = "attack", target = nil}
 
 function Intent:FromKey(key)
     if key == "up" or key == "z" then

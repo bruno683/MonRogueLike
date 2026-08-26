@@ -10,7 +10,29 @@ local directions = {
     function Ia:GetEntityDistance(actor, target)
         return math.abs(actor.x - target.x) + math.abs(actor.y - target.y)
     end
-   
+
+    function Ia:GetIntent(actor, target)
+        if target then
+            local distance = self:GetEntityDistance(actor, target)
+            if distance == 1 then
+
+                return {
+                    type = "attack",
+                    target = target
+                }
+
+            end
+            local intention = self:MoveToEntity(actor, target)
+
+            if intention then 
+                return intention
+            end
+        else
+            return self:GetRandomMove()
+        end
+
+    end
+
     function Ia:MoveToEntity(actor,target)
         if Ia:GetEntityDistance(actor,target) <= 5 then 
             local dx = 0
@@ -42,6 +64,7 @@ local directions = {
     
 
     function Ia:GetRandomMove()
+
         local directions = directions[math.random(#directions)]
 
         return {
@@ -49,6 +72,7 @@ local directions = {
             dx = directions.dx,
             dy = directions.dy
         }
+
     end
 
 return Ia
