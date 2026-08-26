@@ -1,5 +1,6 @@
 -- chargement des modules
 local World = require("/src/world")
+local Intent = require("src/intent_system")
 
 
 
@@ -25,18 +26,18 @@ end
 
 function Game:keypressed(key)
     local acted = false
+    
     if key == "escape" then
         love.event.quit() 
-    elseif key == "d" then
-        acted = World:MoveEntity(World.player, 1, 0)
-    elseif key == "q" then
-        acted = World:MoveEntity(World.player, -1, 0)
-    elseif key == "s" then
-        acted = World:MoveEntity(World.player, 0, 1)
-    elseif key == "z" then
-        acted = World:MoveEntity(World.player, 0, -1) 
-    else acted = false
+        return
     end
+
+    local intention = Intent:FromKey(key)
+
+    if intention then 
+        acted = World:ResolveIntent(World.player, intention)
+    end
+    
     if acted then
         World:AdvanceTurn()
     end

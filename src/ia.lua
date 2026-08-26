@@ -15,6 +15,7 @@ local directions = {
         if Ia:GetEntityDistance(actor,target) <= 5 then 
             local dx = 0
             local dy = 0
+            
             if actor.x > target.x then 
                 dx = -1
             end
@@ -28,9 +29,10 @@ local directions = {
                     dy = 1
                 end
             end
-            return { 
-                dx = dx,
-                dy = dy
+            return {
+                type = "move",
+                    dx = dx,
+                    dy = dy
                 }
         end
         return nil
@@ -40,7 +42,13 @@ local directions = {
     
 
     function Ia:GetRandomMove()
-        return directions[math.random(#directions)]
+        local directions = directions[math.random(#directions)]
+
+        return {
+            type = "move",
+            dx = directions.dx,
+            dy = directions.dy
+        }
     end
 
 return Ia

@@ -10,6 +10,8 @@ local Intent = require("/src/intent_system")
 local World = {}
 
 local linePoints = {}
+
+
 -- constructeur
 
 function World:Load()
@@ -111,8 +113,6 @@ function World:Draw()
     love.graphics.print("Tour: " .. self.turn, 10, 10)  
     love.graphics.setColor(1,1,1)
     --line of sight
-
-
 end
 
 function World:BresenhamPoints(x0, y0, x1, y1)
@@ -139,6 +139,7 @@ function World:BresenhamPoints(x0, y0, x1, y1)
     
     return points
 end
+
 function World:HasLineOfSight(actor, target) 
     local points = self:BresenhamPoints(actor.x, actor.y, target.x, target.y)
     for i = 2, #points -1 do 
@@ -170,6 +171,9 @@ function World:GetEntityAt(x,y)
 
     return nil
 end
+
+
+
 function World:GetHostileTarget(actor) 
     for _, target in ipairs(self.entities) do 
         if target ~= actor and not target.isDead 
@@ -204,6 +208,7 @@ function World:Attack(actor, target)
    
 end
 
+
 function World:HandleEntityCollision(actor,target)
         if target and not target.isDead and self:GetFactionRelation(actor, target) == -100 then 
             return self:Attack(actor, target)
@@ -215,9 +220,7 @@ end
 
 function World:MoveEntity(entity, dx, dy)
     -- Déplace l'entité d'une case si la position cible est praticable.
-        print( "npc1 voit player :",
-            self:HasLineOfSight(self.npc1, self.player)
-            )
+    
         local nextX = entity.x + dx
         local nextY = entity.y + dy
         
@@ -233,8 +236,16 @@ function World:MoveEntity(entity, dx, dy)
 end
 
 
-function World:AdvanceTurn()  
+function World:ResolveIntent(actor, intention)
+    if intention.type == "move" then 
+        return self:MoveEntity(actor, intention.dx, intention.dy)
+    elseif intention.type == "attack" then
+        return self:Attack(actor, intention.target)
+    end
+    return false
+end
 
+function World:AdvanceTurn()  
     self.turn = self.turn  + 1
     for _, actor in ipairs(self.entities) do 
         if not actor.isPlayer and not actor.isDead then 
@@ -242,17 +253,26 @@ function World:AdvanceTurn()
             
             if target  then 
                 local distance = Ia:GetEntityDistance(actor, target)
+                local intention = {
+                        type = "attack",
+                        target = target,
+                    }
                 if distance == 1 then 
-                    self:Attack(actor, target)
+                    
+                    self:ResolveIntent(actor, intention)
+                    
                 else 
+                   
                     local move = Ia:MoveToEntity(actor, target)
                     if move then 
-                        self:MoveEntity(actor, move.dx, move.dy)               
+                        self:ResolveIntent(actor, move)              
                     end
                 end
             else 
                 local move = Ia:GetRandomMove()
-                self:MoveEntity(actor, move.dx, move.dy)
+                if move then
+                    self:ResolveIntent(actor, move)
+                end
             end
 
         end
