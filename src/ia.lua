@@ -27,9 +27,9 @@ local directions = {
             if intention then 
                 return intention
             end
-        else
-            return self:GetRandomMove()
         end
+
+        return self:GetRandomMove()
 
     end
 

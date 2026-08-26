@@ -249,32 +249,17 @@ function World:AdvanceTurn()
     self.turn = self.turn  + 1
     for _, actor in ipairs(self.entities) do 
         if not actor.isPlayer and not actor.isDead then 
+
             local target = self:GetHostileTarget(actor)
-            
-            if target  then 
-                local distance = Ia:GetEntityDistance(actor, target)
-                
-                if distance == 1 then 
-                    local intention = Ia:GetIntent(actor, target)
-                    self:ResolveIntent(actor, intention)
-                else
-                    local intention = Ia:MoveToEntity(actor, target)
-                    
-                    if intention then 
-                        self:ResolveIntent(actor, intention)              
-                    else 
-                        local randomIntent = Ia:GetRandomMove()
-                        self:ResolveIntent(actor, randomIntent)
-                    end
-                end
-            else
-                local intent = Ia:GetRandomMove()
-                self:ResolveIntent(actor, intent)
+
+            local intention = Ia:GetIntent(actor, target)
+
+            if intention then 
+                self:ResolveIntent(actor, intention)
             end
            
         end
     end
-    
 end
 
 
