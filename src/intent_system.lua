@@ -7,6 +7,7 @@ Intent.directions = {
     move_left = {type = "move", dx= -1, dy = 0},
     move_down = {type = "move", dx= 0, dy = 1},
     move_right = {type = "move", dx= 1, dy = 0},
+    wait = {type = "wait"}
 }
 
 --Intent.attack = {type = "attack", target = nil}
@@ -20,6 +21,8 @@ function Intent:FromKey(key)
         return self.directions.move_down
     elseif key == "right" or key == "d" then
         return self.directions.move_right
+    elseif key == "space" then
+        return self.directions.wait
     end
     return nil
 end

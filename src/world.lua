@@ -241,6 +241,8 @@ function World:ResolveIntent(actor, intention)
         return self:MoveEntity(actor, intention.dx, intention.dy)
     elseif intention.type == "attack" then
         return self:Attack(actor, intention.target)
+    elseif intention.type == "wait" then
+        return true
     end
     return false
 end
