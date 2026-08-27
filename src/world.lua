@@ -148,6 +148,8 @@ function World:HasLineOfSight(actor, target)
             return false
         end
     end
+    actor.lastknownTargetX = target.x
+    actor.lastknownTargetY = target.y
     return true
 end
 
@@ -177,10 +179,19 @@ end
 function World:GetHostileTarget(actor) 
     for _, target in ipairs(self.entities) do 
         if target ~= actor and not target.isDead 
-        and self:GetFactionRelation(actor, target) == -100 and self:HasLineOfSight(actor, target) then 
+            and self:GetFactionRelation(actor, target) == -100 
+            and self:HasLineOfSight(actor, target) then 
+
+            actor.lastknownTargetX = target.x
+            actor.lastknownTargetY = target.y
+
+            print(actor.name.." a repéré "..target.name..
+            " à la position ("..target.x..","..target.y..")")
             return target
         end
+        
     end
+    return nil
 end
 
 function World:Attack(actor, target) 
@@ -249,12 +260,15 @@ end
 
 function World:AdvanceTurn()  
     self.turn = self.turn  + 1
+    print("Tour: "..self.turn)
     for _, actor in ipairs(self.entities) do 
         if not actor.isPlayer and not actor.isDead then 
 
             local target = self:GetHostileTarget(actor)
 
             local intention = Ia:GetIntent(actor, target)
+
+            
 
             if intention then 
                 self:ResolveIntent(actor, intention)

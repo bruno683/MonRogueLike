@@ -13,7 +13,9 @@ function Entity:New(x, y, name, hp, color)
         isPlayer = false,
         interactionType = "neutral",
         faction = "neutral",
-        color = color
+        color = color,
+        lastknownTargetX = nil,
+        lastknownTargetY = nil 
     }
     self.__index = self
     setmetatable(this, self)
