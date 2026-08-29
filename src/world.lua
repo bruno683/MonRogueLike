@@ -1,10 +1,12 @@
+------ loading modules
 local Map = require("/src/map")
 local Level = require("/src/level")
-local Camera = require("/libs/camera")
 local Entity = require("/src/entity")
 local Ia = require("/src/ia")
 local Intent = require("/src/intent_system")
-
+------ loading librairies
+local LuaStar = require("/libs/lua-star")
+local Camera = require("/libs/camera")
 
 
 local World = {}
@@ -112,7 +114,6 @@ function World:Draw()
     love.graphics.setColor(0,0,1)
     love.graphics.print("Tour: " .. self.turn, 10, 10)  
     love.graphics.setColor(1,1,1)
-    --line of sight
 end
 
 function World:BresenhamPoints(x0, y0, x1, y1)
@@ -139,6 +140,36 @@ function World:BresenhamPoints(x0, y0, x1, y1)
     
     return points
 end
+
+function World:FindPath(actor, goalX, goalY)
+
+    local start = {
+        x = actor.x,
+        y = actor.y
+    }
+
+    local goal = {
+        x = goalX,
+        y = goalY
+    }
+
+    local function positionIsOpen(x, y)
+        return self.map:IsWalkable(x, y)
+    end
+
+    local path = LuaStar:find(
+        self.map.width,
+        self.map.height,
+        start,
+        goal,
+        positionIsOpen,
+        false,
+        true
+    )
+
+    return path
+end
+
 
 function World:HasLineOfSight(actor, target) 
     local points = self:BresenhamPoints(actor.x, actor.y, target.x, target.y)
@@ -185,8 +216,6 @@ function World:GetHostileTarget(actor)
             actor.lastknownTargetX = target.x
             actor.lastknownTargetY = target.y
 
-            print(actor.name.." a repéré "..target.name..
-            " à la position ("..target.x..","..target.y..")")
             return target
         end
         
@@ -208,12 +237,9 @@ function World:Attack(actor, target)
     
     target.hp = target.hp - 5
 
-    print(actor.name.." attaque "..target.name)
-    print("hp restant de "..target.name.." : "..target.hp)
 
     if target.hp <= 0 then 
         target.isDead = true 
-        print(target.name.." est mort!")
     end
     return true
    
@@ -239,6 +265,8 @@ function World:MoveEntity(entity, dx, dy)
             entity:SetPosition(nextX, nextY)
             return true     
         end
+        
+        
         local target = self:GetEntityAt(nextX, nextY)
         if target then
             return self:HandleEntityCollision(entity, target)
@@ -259,17 +287,25 @@ function World:ResolveIntent(actor, intention)
 end
 
 function World:AdvanceTurn()  
+    
     self.turn = self.turn  + 1
-    print("Tour: "..self.turn)
+
     for _, actor in ipairs(self.entities) do 
         if not actor.isPlayer and not actor.isDead then 
 
             local target = self:GetHostileTarget(actor)
-
-            local intention = Ia:GetIntent(actor, target)
-
+            local path = nil
             
-
+            if not target and
+                actor.lastknownTargetX 
+                and actor.lastknownTargetY then 
+                    path = self:FindPath(
+                        actor,
+                        actor.lastknownTargetX,
+                        actor.lastknownTargetY
+                    )
+            end
+            local intention = Ia:GetIntent(actor, target, path)
             if intention then 
                 self:ResolveIntent(actor, intention)
             end
