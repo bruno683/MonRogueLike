@@ -13,7 +13,7 @@ end
 
 function Ia:GetNextMoveFromPath(actor, path)
 
-    if not path or #path == 0 then
+    if not path or #path < 2 then
         return nil
     end
     local nextPoint  = path[2]

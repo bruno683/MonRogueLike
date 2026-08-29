@@ -3,7 +3,6 @@ local Map = require("/src/map")
 local Level = require("/src/level")
 local Entity = require("/src/entity")
 local Ia = require("/src/ia")
-local Intent = require("/src/intent_system")
 ------ loading librairies
 local LuaStar = require("/libs/lua-star")
 local Camera = require("/libs/camera")
@@ -179,8 +178,7 @@ function World:HasLineOfSight(actor, target)
             return false
         end
     end
-    actor.lastknownTargetX = target.x
-    actor.lastknownTargetY = target.y
+
     return true
 end
 
