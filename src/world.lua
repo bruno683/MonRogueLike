@@ -107,7 +107,6 @@ function World:Update(dt)
             table.remove(self.entities, i)
         end
     end
-
     
 end
 
@@ -118,8 +117,9 @@ function World:Draw()
         entity:Render(self.map)
     end
 
-    local apple = self.apple
-    love.graphics.print(apple.name, apple.x * self.map.cellsize, apple.y * self.map.cellsize, 0, 1, 1)
+    for _, item in ipairs(self.items) do 
+        love.graphics.print(item.name, item.x * self.map.cellsize, item.y * self.map.cellsize, 0, 1, 1)
+    end
 
     
 
@@ -131,6 +131,21 @@ function World:Draw()
     love.graphics.setColor(1,1,1)
 end
 
+-- fonction temporaire pour ouvrir l'inventaire
+function World:Keypressed(key) 
+     if key == "i" then
+
+        if #self.player.inventory == 0 then 
+            print("l'inventaire de "..self.player.name..
+                " est vide !")
+        end
+
+        for _, item in ipairs(self.player.inventory) do 
+            print("l'inventaire de "..self.player.name..
+                " contient un(e) "..item.name)
+        end
+    end
+end
 function World:BresenhamPoints(x0, y0, x1, y1)
     local points = {}
     local dx = math.abs(x1 - x0)
@@ -220,9 +235,9 @@ end
 
 
 function World:GetItemAt(x,y)
-    for _, item in ipairs(self.items) do
+    for i, item in ipairs(self.items) do
         if item.x == x and item.y == y then
-            return item
+            return item, i
         end
     end
     return nil
@@ -268,18 +283,17 @@ function World:Attack(actor, target)
 end
 
 function World:PickUpItem(actor) 
-    item = self:GetItemAt(actor.x, actor.y)
+    local item, index = self:GetItemAt(actor.x, actor.y)
     if item then 
         print("Pick up item")
+        table.insert(actor.inventory, item)
+        table.remove(self.items, index)
+        print(actor.name.." put "..item.name.." in his backpack !")
         return true
     end
-        
    
     print("nothing found !")
     return false
-
-    
-   
 end
 
 function World:HandleEntityCollision(actor,target)
@@ -327,7 +341,7 @@ end
 function World:AdvanceTurn()  
     
     self.turn = self.turn  + 1
-
+   
     for _, actor in ipairs(self.entities) do 
         if not actor.isPlayer and not actor.isDead then 
 

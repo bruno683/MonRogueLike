@@ -15,7 +15,8 @@ function Entity:New(x, y, name, hp, color)
         faction = "neutral",
         color = color,
         lastknownTargetX = nil,
-        lastknownTargetY = nil 
+        lastknownTargetY = nil,
+        inventory = {}
     }
     self.__index = self
     setmetatable(this, self)

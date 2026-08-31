@@ -31,6 +31,7 @@ function Game:keypressed(key)
         love.event.quit() 
         return
     end
+    World:Keypressed(key)
 
     local intention = Intent:FromKey(key)
 
