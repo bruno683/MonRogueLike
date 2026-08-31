@@ -36,8 +36,9 @@ function Map:Render()
             local sx = c * self.cellsize
             local sy = l * self.cellsize
             local tile = self:GetTile(c, l)
+            
             if tile == tiles[1].id then 
-                love.graphics.rectangle("line",sx,sy, self.cellsize, self.cellsize)
+                love.graphics.rectangle("line",sx,sy, self.cellsize, self.cellsize)          
             elseif tile == tiles[2].id then
                 love.graphics.rectangle("fill", sx, sy, self.cellsize, self.cellsize)
             elseif tile == tiles[3].id  then

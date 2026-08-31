@@ -36,6 +36,7 @@ function World:Load()
     self.npc2 = Entity:New(10, 22,"npc2", 50, green)
     self.npc2.faction = "neutral"
     table.insert(self.entities, self.npc2)
+    
     -- map loading
     self.map = Map:New(Level.grid,41,25,32)
     -- initialisation du tour
@@ -59,7 +60,16 @@ function World:Load()
         }
     }
 
-    
+    -- Items Creation
+    self.items = {}
+    self.apple = {
+        x = 20 , 
+        y = 15 ,
+        name = "apple"
+    }
+    table.insert(self.items, self.apple)
+    print(self.apple.x , self.apple.y)
+    print(self.player.x, self.player.y)
         
 end
 
@@ -107,6 +117,12 @@ function World:Draw()
     for _, entity in ipairs(self.entities) do 
         entity:Render(self.map)
     end
+
+    local apple = self.apple
+    love.graphics.print(apple.name, apple.x * self.map.cellsize, apple.y * self.map.cellsize, 0, 1, 1)
+
+    
+
     love.graphics.setColor(1,1,1)
     
     self.camera:detach()
@@ -199,10 +215,18 @@ function World:GetEntityAt(x,y)
             return entity
         end
     end
-
     return nil
 end
 
+
+function World:GetItemAt(x,y)
+    for _, item in ipairs(self.items) do
+        if item.x == x and item.y == y then
+            return item
+        end
+    end
+    return nil
+end
 
 
 function World:GetHostileTarget(actor) 
@@ -243,6 +267,20 @@ function World:Attack(actor, target)
    
 end
 
+function World:PickUpItem(actor) 
+    item = self:GetItemAt(actor.x, actor.y)
+    if item then 
+        print("Pick up item")
+        return true
+    end
+        
+   
+    print("nothing found !")
+    return false
+
+    
+   
+end
 
 function World:HandleEntityCollision(actor,target)
         if target and not target.isDead and self:GetFactionRelation(actor, target) == -100 then 
@@ -280,6 +318,8 @@ function World:ResolveIntent(actor, intention)
         return self:Attack(actor, intention.target)
     elseif intention.type == "wait" then
         return true
+    elseif intention.type == "pickup" then
+        return self:PickUpItem(actor)
     end
     return false
 end
