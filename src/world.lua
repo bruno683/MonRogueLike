@@ -144,7 +144,10 @@ function World:Keypressed(key)
             print("l'inventaire de "..self.player.name..
                 " contient un(e) "..item.name)
         end
+    elseif key == "h" then 
+        self:DropItem()
     end
+    
 end
 function World:BresenhamPoints(x0, y0, x1, y1)
     local points = {}
@@ -170,6 +173,7 @@ function World:BresenhamPoints(x0, y0, x1, y1)
     
     return points
 end
+
 
 function World:FindPath(actor, goalX, goalY)
 
@@ -295,7 +299,28 @@ function World:PickUpItem(actor)
     print("nothing found !")
     return false
 end
+function World:DropItem() 
 
+    if #self.player.inventory ~= 0 then
+
+        for i, item in ipairs(self.player.inventory) do 
+
+                print(self.player.name.."jete un(e) "..item.name)
+                item.x = self.player.x
+                item.y = self.player.y
+                table.insert(self.items, item)
+                table.remove(self.player.inventory, i)
+                
+        end
+        
+        return true
+
+    end
+
+    print("Il n'y a rien dans le sac")
+    return false
+
+end
 function World:HandleEntityCollision(actor,target)
         if target and not target.isDead and self:GetFactionRelation(actor, target) == -100 then 
             return self:Attack(actor, target)
