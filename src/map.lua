@@ -71,11 +71,25 @@ function Map:SetTile(x,y, tile)
 end
 
 function Map:IsTransparent(x,y)
-    return self:GetTile(x,y) == 0
+    local tileId = self:GetTile(x,y)
+    local tile = Tiles[tileId + 1]
+
+    if tile then 
+            return tile.isTransparent
+    end
+    return false
+    --return self:GetTile(x,y) == 0
 end
 
 function Map:IsWalkable(x,y)
-    return self:GetTile(x,y) == 0
+    local tileId = self:GetTile(x,y)
+    local tile = Tiles[tileId + 1]
+
+    if tile then 
+            return tile.walkable
+    end
+    return false
+    --return self:GetTile(x,y) == 0
 end
 
 return Map
