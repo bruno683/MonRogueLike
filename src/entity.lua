@@ -11,7 +11,6 @@ function Entity:New(x, y, name, hp, color)
         hp = hp,
         isDead = false,
         isPlayer = false,
-        interactionType = "neutral",
         faction = "neutral",
         color = color,
         lastknownTargetX = nil,
