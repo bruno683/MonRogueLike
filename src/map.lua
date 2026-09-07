@@ -3,15 +3,17 @@ local Tiles = require ("/src/tiles")
 
 -- constructeur
 
+
 function Map:New(data, width,height, cellsize)
     assert(data ~= nil, "Map:New() nécessite un tableau de Tiles")
     assert(width ~= nil and height ~= nil, "Map:New() nécessite width et height")
     assert(#data == width * height, "Map:New() le tableau de Tiles doit avoir une taille égale à width * height")
     local this = {
-        Tiles = data,
+        tiles = data,
         width = width,
         height = height,
         cellsize = cellsize or 64,
+        doors = {}
     }
 
     self.__index = self
@@ -57,16 +59,38 @@ function Map:GetTile(x,y)
         return 0
     end
 
-    return self.Tiles[y * self.width + x + 1] 
+    return self.tiles[y * self.width + x + 1] 
 end
 
+function Map:GetDoor(x, y)
+
+    local tileId = self:GetTile(x, y)
+
+
+    if tileId ~= Tiles[5].id then 
+        return nil
+    end 
+
+    local key = x.."+"..y
+
+    if not self.doors[key] then 
+
+        self.doors[key] = {
+            x = x,
+            y = y,
+            isOpen = false
+        }
+    end
+
+    return self.doors[key]
+end
 
 function Map:SetTile(x,y, tile)
     if x < 0 or y < 0 or x > self.width - 1 or y > self.height - 1 then
         return 0
     end
 
-    self.Tiles[y * self.width + x + 1] = tile
+    self.tiles[y * self.width + x + 1] = tile
     return 1
 end
 
@@ -75,21 +99,34 @@ function Map:IsTransparent(x,y)
     local tile = Tiles[tileId + 1]
 
     if tile then 
-            return tile.isTransparent
+        return tile.isTransparent
     end
     return false
     --return self:GetTile(x,y) == 0
 end
 
 function Map:IsWalkable(x,y)
+
     local tileId = self:GetTile(x,y)
+
+    if tileId == Tiles[5].id then 
+
+        local door = self:GetDoor(x,y)
+
+        if door then 
+            return door.isOpen
+        end
+
+        return false
+    end
+
     local tile = Tiles[tileId + 1]
 
     if tile then 
-            return tile.walkable
+        return tile.walkable
     end
+
     return false
-    --return self:GetTile(x,y) == 0
 end
 
 return Map

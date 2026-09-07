@@ -13,7 +13,22 @@ Intent.directions = {
 Intent.actions = {
     wait = {type = "wait"},
     pick_up = {type = "pickup"},
-    open = {type = "open"}
+    open_right = {type = "open",
+            dx = 1,
+            dy = 0
+            },
+    open_down = {type = "open",
+            dx = 0,
+            dy = 1
+            },
+    open_left = {type = "open",
+            dx = -1,
+            dy = 0
+    },
+    open_up = {type = "open",
+            dx = 0,
+            dy = -1
+            }
 }
 
 --Intent.attack = {type = "attack", target = nil}
@@ -32,7 +47,7 @@ function Intent:FromKey(key)
     elseif key == "f" then 
         return self.actions.pick_up
     elseif key == "o" then 
-        return self.actions.open
+        return self.actions.open_right
     end
     return nil
 end

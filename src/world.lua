@@ -70,7 +70,7 @@ function World:Load()
     table.insert(self.items, self.apple)
     print(self.apple.x , self.apple.y)
     print(self.player.x, self.player.y)
-        
+
 end
 
 
@@ -204,17 +204,23 @@ function World:FindPath(actor, goalX, goalY)
     return path
 end
 
-
 function World:HasLineOfSight(actor, target) 
+
     local points = self:BresenhamPoints(actor.x, actor.y, target.x, target.y)
+
     for i = 2, #points -1 do 
+
         local p = points[i]
+
         if not self.map:IsTransparent(p.x, p.y) then 
+
             return false
+
         end
     end
 
     return true
+
 end
 
 function World:GetFactionRelation(actor, target) 
@@ -237,7 +243,6 @@ function World:GetEntityAt(x,y)
     return nil
 end
 
-
 function World:GetItemAt(x,y)
     for i, item in ipairs(self.items) do
         if item.x == x and item.y == y then
@@ -246,7 +251,6 @@ function World:GetItemAt(x,y)
     end
     return nil
 end
-
 
 function World:GetHostileTarget(actor) 
     for _, target in ipairs(self.entities) do 
@@ -299,6 +303,7 @@ function World:PickUpItem(actor)
     print("nothing found !")
     return false
 end
+
 function World:DropItem() 
 
     if #self.player.inventory ~= 0 then
@@ -321,6 +326,19 @@ function World:DropItem()
     return false
 
 end
+
+function World:OpenDoor(actor, dx, dy)
+    local door = self.map:GetDoor(actor.x + dx, actor.y + dy)
+
+    if door and not door.isOpen then
+        door.isOpen = true
+        print("la porte est ouverte !")
+        return true
+    end
+
+    return false
+end
+
 function World:HandleEntityCollision(actor,target)
         if target and not target.isDead and self:GetFactionRelation(actor, target) == -100 then 
             return self:Attack(actor, target)
@@ -341,12 +359,11 @@ function World:MoveEntity(entity, dx, dy)
             return true     
         end
         
-        
         local target = self:GetEntityAt(nextX, nextY)
         if target then
             return self:HandleEntityCollision(entity, target)
         end
-            return false
+        return false
 end
 
 
@@ -359,6 +376,8 @@ function World:ResolveIntent(actor, intention)
         return true
     elseif intention.type == "pickup" then
         return self:PickUpItem(actor)
+    elseif intention.type == "open" then
+        return self:OpenDoor(actor, intention.dx, intention.dy)    
     end
     return false
 end
