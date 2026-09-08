@@ -331,7 +331,9 @@ function World:OpenDoor(actor, dx, dy)
     local door = self.map:GetDoor(actor.x + dx, actor.y + dy)
 
     if door and not door.isOpen then
+        
         door.isOpen = true
+        
         print("la porte est ouverte !")
         return true
     end

@@ -46,7 +46,12 @@ function Map:Render()
                 love.graphics.rectangle("fill", sx, sy, self.cellsize, self.cellsize)
                 love.graphics.setColor(1, 1, 1)
             elseif tile == Tiles[5].id then 
-                love.graphics.setColor(Tiles[5].color)
+                local door = self:GetDoor(c, l)
+                local alpha = Tiles[5].alpha
+                if door.isOpen then 
+                    alpha = 0
+                end
+                love.graphics.setColor(Tiles[5].color[1],Tiles[5].color[2],Tiles[5].color[3], alpha)
                 love.graphics.rectangle("fill", sx, sy, self.cellsize, self.cellsize)
                 love.graphics.setColor(1,1,1)
             end
@@ -102,7 +107,6 @@ function Map:IsTransparent(x,y)
         return tile.isTransparent
     end
     return false
-    --return self:GetTile(x,y) == 0
 end
 
 function Map:IsWalkable(x,y)
