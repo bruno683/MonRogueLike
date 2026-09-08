@@ -15,7 +15,8 @@ function Entity:New(x, y, name, hp, color)
         color = color,
         lastknownTargetX = nil,
         lastknownTargetY = nil,
-        inventory = {}
+        inventory = {},
+        visionRange = 5
     }
     self.__index = self
     setmetatable(this, self)

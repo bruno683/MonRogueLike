@@ -254,9 +254,13 @@ end
 
 function World:GetHostileTarget(actor) 
     for _, target in ipairs(self.entities) do 
+        local distance =
+            math.abs(actor.x - target.x) +
+            math.abs(actor.y - target.y)
         if target ~= actor and not target.isDead 
             and self:GetFactionRelation(actor, target) == -100 
-            and self:HasLineOfSight(actor, target) then 
+            and self:HasLineOfSight(actor, target)
+            and distance <= actor.visionRange then 
 
             actor.lastknownTargetX = target.x
             actor.lastknownTargetY = target.y
