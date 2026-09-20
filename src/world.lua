@@ -260,8 +260,8 @@ function World:GetHostileTarget(actor)
         if target ~= actor and not target.isDead 
             and self:GetFactionRelation(actor, target) == -100 
             and self:HasLineOfSight(actor, target)
-            and distance <= actor.visionRange then 
-
+            and distance <= 5 then 
+         
             actor.lastknownTargetX = target.x
             actor.lastknownTargetY = target.y
 
@@ -337,8 +337,16 @@ function World:OpenDoor(actor, dx, dy)
     if door and not door.isOpen then
         
         door.isOpen = true
+        door.isTransparent = true
         
         print("la porte est ouverte !")
+        return true
+    elseif door and door.isOpen then
+
+        door.isOpen = false 
+        door.isTransparent = false
+
+        print( "La porte est fermée !")
         return true
     end
 
@@ -406,7 +414,16 @@ function World:AdvanceTurn()
                         actor.lastknownTargetX,
                         actor.lastknownTargetY
                     )
+
             end
+            print(
+                actor.name,
+                "target =",
+                target and target.name or "nil",
+                "memory =",
+                actor.lastknownTargetX,
+                actor.lastknownTargetY
+            )
             local intention = Ia:GetIntent(actor, target, path)
             if intention then 
                 self:ResolveIntent(actor, intention)
