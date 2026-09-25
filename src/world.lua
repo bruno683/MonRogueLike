@@ -27,6 +27,8 @@ function World:Load()
     self.player = Entity:New(20,14, "@", 50, blue)
     self.player.isPlayer = true
     self.player.faction  = "player"
+    self.player.facingX = 0
+    self.player.facingY = -1
     table.insert(self.entities, self.player)
     -- npc1
     self.npc1 = Entity:New(10, 14, "npc1", 25, red)
@@ -149,6 +151,7 @@ function World:Keypressed(key)
     end
     
 end
+
 function World:BresenhamPoints(x0, y0, x1, y1)
     local points = {}
     local dx = math.abs(x1 - x0)
@@ -331,8 +334,8 @@ function World:DropItem()
 
 end
 
-function World:OpenDoor(actor, dx, dy)
-    local door = self.map:GetDoor(actor.x + dx, actor.y + dy)
+function World:OpenDoor(actor, facingX, facingY)
+    local door = self.map:GetDoor(actor.x + facingX, actor.y + facingY)
 
     if door and not door.isOpen then
         
@@ -364,10 +367,12 @@ end
 
 function World:MoveEntity(entity, dx, dy)
     -- Déplace l'entité d'une case si la position cible est praticable.
-    
+        entity.facingX = dx
+        entity.facingY = dy
+        print(entity.name.." = "..entity.facingX..", "..entity.facingY)
         local nextX = entity.x + dx
         local nextY = entity.y + dy
-        
+        print("nextX = ", nextX, "nextY = ", nextY)
         if self.map:IsWalkable(nextX, nextY) and not self:GetEntityAt(nextX, nextY) then  
             entity:SetPosition(nextX, nextY)
             return true     
@@ -391,7 +396,7 @@ function World:ResolveIntent(actor, intention)
     elseif intention.type == "pickup" then
         return self:PickUpItem(actor)
     elseif intention.type == "open" then
-        return self:OpenDoor(actor, intention.dx, intention.dy)    
+        return self:OpenDoor(actor, self.player.facingX, self.player.facingY)    
     end
     return false
 end
