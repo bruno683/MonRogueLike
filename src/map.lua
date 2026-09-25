@@ -103,10 +103,7 @@ function Map:IsTransparent(x,y)
     local tileId = self:GetTile(x,y)
     local tile = Tiles[tileId + 1]
 
-    if tile then 
-        return tile.isTransparent
-    end
-    return false
+    return tile and tile.isTransparent or false
 end
 
 function Map:IsWalkable(x,y)
@@ -117,11 +114,7 @@ function Map:IsWalkable(x,y)
 
         local door = self:GetDoor(x,y)
 
-        if door then 
-            return door.isOpen
-        end
-
-        return false
+        return door and door.isOpen or false
     end
 
     local tile = Tiles[tileId + 1]

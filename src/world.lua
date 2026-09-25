@@ -338,19 +338,22 @@ function World:OpenDoor(actor, facingX, facingY)
     local door = self.map:GetDoor(actor.x + facingX, actor.y + facingY)
 
     if door and not door.isOpen then
-        
+        -- ouvrir la porte
         door.isOpen = true
         door.isTransparent = true
         
         print("la porte est ouverte !")
         return true
-    elseif door and door.isOpen then
-
+    elseif door and door.isOpen and not self:GetEntityAt(door.x, door.y) then
+        -- fermer la porte à condition qu'aucune entité ne soit sur la case
         door.isOpen = false 
         door.isTransparent = false
 
         print( "La porte est fermée !")
         return true
+    else
+        print("La porte est bloquée !")
+        return false
     end
 
     return false
@@ -396,7 +399,7 @@ function World:ResolveIntent(actor, intention)
     elseif intention.type == "pickup" then
         return self:PickUpItem(actor)
     elseif intention.type == "open" then
-        return self:OpenDoor(actor, self.player.facingX, self.player.facingY)    
+        return self:OpenDoor(actor, actor.facingX, actor.facingY)    
     end
     return false
 end
