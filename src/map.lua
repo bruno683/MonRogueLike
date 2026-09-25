@@ -60,11 +60,11 @@ function Map:Render()
 end
  
 function Map:GetTile(x,y)
-    if x < 0 or y < 0 or x > self.width - 1 or y > self.height - 1 then
-        return 0
+    if x >= 0 and y >= 0 and x < self.width and y < self.height then
+        return self.tiles[y * self.width + x + 1]
+    else
+        return nil
     end
-
-    return self.tiles[y * self.width + x + 1] 
 end
 
 function Map:GetDoor(x, y)
@@ -92,7 +92,7 @@ end
 
 function Map:SetTile(x,y, tile)
     if x < 0 or y < 0 or x > self.width - 1 or y > self.height - 1 then
-        return 0
+        return nil
     end
 
     self.tiles[y * self.width + x + 1] = tile

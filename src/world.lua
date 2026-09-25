@@ -351,7 +351,7 @@ function World:OpenDoor(actor, facingX, facingY)
 
         print( "La porte est fermée !")
         return true
-    else
+    elseif door and door.isOpen and self:GetEntityAt(door.x, door.y) then
         print("La porte est bloquée !")
         return false
     end
