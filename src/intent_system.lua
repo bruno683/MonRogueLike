@@ -32,7 +32,7 @@ function Intent:FromKey(key)
         return self.directions.move_right
     elseif key == "space" then
         return self.actions.wait
-    elseif key == "f" then 
+    elseif key == "g" then 
         return self.actions.pick_up
     elseif key == "o"  then 
         return self.actions.open
